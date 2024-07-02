@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Img from "next/image";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Safe Tutorial: Passkeys",
@@ -17,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <nav
           style={{
             display: "flex",
@@ -61,11 +58,6 @@ export default function RootLayout({
             </a>
           </div>
         </nav>
-        <div style={{ width: "100%", textAlign: "center" }}>
-          <h1>Passkeys tutorial</h1>
-
-          <div>Create a new 4337 compatible Safe Account using passkeys</div>
-        </div>
         <div
           style={{
             display: "flex",
