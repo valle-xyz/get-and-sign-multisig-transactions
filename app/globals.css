@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 body {
@@ -30,4 +22,242 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: #00e673;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 300;
+  src: url('/fonts/Citerne-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/Citerne-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 500;
+  src: url('/fonts/Citerne-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 400;
+  font-style: italic;
+  src: url('/fonts/Citerne-Italic.woff2') format('woff2');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Citerne, sans-serif;
+}
+
+button {
+  font-family: Citerne, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  display: inline-block;
+}
+
+@media (max-width: 899px) {
+  .navOpen {
+    overflow-y: hidden;
+  }
+}
+
+b {
+  all: unset;
+  color: var(--mui-palette-primary-main);
+}
+
+u {
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 90%;
+}
+
+u:before,
+u:after {
+  content: '{';
+  display: inline-block;
+  mask-repeat: no-repeat;
+  mask-position: bottom;
+  mask-size: contain;
+  background-color: currentColor;
+}
+
+u:before {
+  mask-image: url('/images/left-brace.svg');
+}
+
+u:after {
+  mask-image: url('/images/right-brace.svg');
+}
+
+details summary {
+  color: var(--mui-palette-primary-main);
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid white;
+  padding: 8px;
+}
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 300;
+  src: url('/fonts/Citerne-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/Citerne-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 500;
+  src: url('/fonts/Citerne-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Citerne';
+  font-display: swap;
+  font-weight: 400;
+  font-style: italic;
+  src: url('/fonts/Citerne-Italic.woff2') format('woff2');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Citerne, sans-serif;
+}
+
+button {
+  font-family: Citerne, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  display: inline-block;
+}
+
+@media (max-width: 899px) {
+  .navOpen {
+    overflow-y: hidden;
+  }
+}
+
+b {
+  all: unset;
+  color: var(--mui-palette-primary-main);
+}
+
+u {
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 90%;
+}
+
+u:before,
+u:after {
+  content: '{';
+  display: inline-block;
+  mask-repeat: no-repeat;
+  mask-position: bottom;
+  mask-size: contain;
+  background-color: currentColor;
+}
+
+u:before {
+  mask-image: url('/images/left-brace.svg');
+}
+
+u:after {
+  mask-image: url('/images/right-brace.svg');
+}
+
+details summary {
+  color: var(--mui-palette-primary-main);
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid white;
+  padding: 8px;
 }
