@@ -1,14 +1,85 @@
+"use client";
+
 import Image from "next/image";
+import { OWNER_1_PRIVATE_KEY, OWNER_1_PUBLIC_KEY } from "./keys";
+import SafeApiKit from "@safe-global/api-kit";
+import { useEffect } from "react";
+import { useState } from "react";
+import { SafeFactory } from "@safe-global/protocol-kit";
+import { RPC_URL } from "./config";
 
 export default function Home() {
+  const [safesOfOwner, setSafesOfOwner] = useState([]);
+  const [isDeployingSafe, setIsDeployingSafe] = useState(false);
+
+  const checkForDeployedSafes = async () => {
+    const apiKit = new SafeApiKit({
+      chainId: 11155111,
+    });
+
+    const safesOfOwner = await apiKit.getSafesByOwner(OWNER_1_PUBLIC_KEY);
+    console.log("Safes of Owners:", safesOfOwner);
+    setSafesOfOwner(safesOfOwner.safes);
+  };
+
+  const deploySafeForOwner = async () => {
+    setIsDeployingSafe(true);
+    const safeFactory = await SafeFactory.init({
+      provider: RPC_URL,
+      signer: OWNER_1_PRIVATE_KEY,
+    });
+
+    const safe = await safeFactory.deploySafe({
+      safeAccountConfig: {
+        owners: [await OWNER_1_PUBLIC_KEY],
+        threshold: 1,
+      },
+    });
+
+    console.log("Deployed Safe:", safe);
+    setSafesOfOwner([...safesOfOwner, safe.safeAddress]);
+    setIsDeployingSafe(false);
+  };
+
+  useEffect(() => {
+    checkForDeployedSafes();
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm">
-        <p className="fixed left-0 top-0 flex w-full border-b pb-6 pt-8 backdrop-blur-2xl border-neutral-800 bg-zinc-800/30 from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:p-4 lg:bg-zinc-800/30">
+        <p className=" left-0 top-0 flex border-b pb-6 pt-8 backdrop-blur-2xl border-neutral-800  from-inherit static w-auto  rounded-xl border p-4 bg-zinc-800/30">
           Get started by editing&nbsp;
           <code className="font-mono font-bold">app/page.tsx</code>
         </p>
       </div>
+
+      <div className="mt-16">
+        {safesOfOwner?.map((safe, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-center justify-center px-8 mb-4 border border-neutral-800 rounded-lg"
+          >
+            <p className="text-lg font-semibold">
+              {index + 1}: {safe}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {safesOfOwner.length === 0 && (
+        <div className="justify-center p-8 border border-neutral-800 rounded-lg bg-zinc-800/30">
+          <p className="text-lg font-semibold">You currently have no Safes.</p>
+          <p>Here you can deploy a Safe with you as the only owner:</p>
+          <button
+            onClick={deploySafeForOwner}
+            className="mt-4 px-4 py-2 font-semibold text-white bg-neutral-800 rounded-lg"
+          >
+            Deploy Safe
+          </button>
+          {isDeployingSafe && <p>Deploying Safe...</p>}
+        </div>
+      )}
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
         <a
