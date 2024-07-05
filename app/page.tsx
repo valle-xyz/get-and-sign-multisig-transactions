@@ -11,6 +11,7 @@ import { RPC_URL } from "./config";
 export default function Home() {
   const [safesOfOwner, setSafesOfOwner] = useState([]);
   const [isDeployingSafe, setIsDeployingSafe] = useState(false);
+  const [selectedSafe, setSelectedSafe] = useState(null);
 
   const checkForDeployedSafes = async () => {
     const apiKit = new SafeApiKit({
@@ -39,6 +40,7 @@ export default function Home() {
     console.log("Deployed Safe:", safe);
     setSafesOfOwner([...safesOfOwner, safe.safeAddress]);
     setIsDeployingSafe(false);
+    setSelectedSafe(safe.safeAddress);
   };
 
   useEffect(() => {
@@ -58,7 +60,12 @@ export default function Home() {
         {safesOfOwner?.map((safe, index) => (
           <div
             key={index}
-            className="flex flex-col items-center justify-center px-8 mb-4 border border-neutral-800 rounded-lg"
+            onClick={() => setSelectedSafe(safe)}
+            className={`${
+              selectedSafe === safe
+                ? "bg-neutral-800/30"
+                : "hover:bg-neutral-800/30"
+            } cursor-pointer flex flex-col items-center justify-center px-8 mb-4 border border-neutral-800 rounded-lg`}
           >
             <p className="text-lg font-semibold">
               {index + 1}: {safe}
