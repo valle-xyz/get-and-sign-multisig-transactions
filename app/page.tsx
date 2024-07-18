@@ -102,7 +102,7 @@ export default function Home() {
     // Initialize the Safe with Owner 1
     let safe = await Safe.init({
       provider: RPC_URL,
-      signer: OWNER_1_PRIVATE_KEY,
+      signer: passkey,
       safeAddress: selectedSafe,
     });
 
@@ -114,16 +114,16 @@ export default function Home() {
     };
 
     // Create and sign the transaction with Owner 1
-    const txSigned_1 = await safe.createTransaction({
+    const tx = await safe.createTransaction({
       transactions: [dummyTransaction],
     });
 
     // Sign the transaction with the passkey
-    safe = await safe.connect({ signer: passkey });
-    const txSigned_2 = await safe.signTransaction(txSigned_1);
+    const txSigned_1 = await safe.signTransaction(tx);
 
     // Execute the transaction as Owner 1 (which has Sepolia Eth)
     safe = await safe.connect({ signer: OWNER_1_PRIVATE_KEY });
+    const txSigned_2 = await safe.signTransaction(txSigned_1);
     const { hash } = await safe.executeTransaction(txSigned_2);
 
     // Log the transaction hash
