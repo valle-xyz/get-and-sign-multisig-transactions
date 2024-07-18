@@ -1,7 +1,7 @@
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { writeFileSync } from "fs";
 
-function initPrivateKeys() {
+function main() {
   let keysContent = "";
   for (let i = 1; i < 4; i++) {
     const privateKey = generatePrivateKey();
@@ -13,4 +13,4 @@ function initPrivateKeys() {
   writeFileSync("app/keys.js", keysContent);
 }
 
-initPrivateKeys();
+main();

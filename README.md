@@ -17,4 +17,19 @@ pnpm dev
 bun dev
 ```
 
+## Keys
+
+You can generate your own private and public keys with the following command. Please charge the accounts with Sepolia 
+Eth before you try to send a transaction.
+
+```bash
+npm run initPrivateKeys
+# or
+yarn initPrivateKeys
+# or
+pnpm initPrivateKeys
+# or
+bun initPrivateKeys
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

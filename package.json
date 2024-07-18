@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "initPrivateKeys": "node scripts/initPrivateKeys.mjs"
+    "generate-private-keys": "node scripts/generatePrivateKeys.mjs"
   },
   "dependencies": {
     "@safe-global/api-kit": "^2.4.2",
