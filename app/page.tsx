@@ -77,21 +77,23 @@ export default function Home() {
     <main className="min-h-screen flex-col items-center justify-between p-24">
       <div className="mt-16">
         <p className="text-lg font-semibold mb-4">Safes:</p>
-        {safesOfOwner?.map((safe, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedSafe(safe)}
-            className={`${
-              selectedSafe === safe
-                ? "bg-neutral-800/30"
-                : "hover:bg-neutral-800/30"
-            } cursor-pointer flex flex-col items-center justify-center px-8 mb-4 border border-neutral-800 rounded-lg`}
-          >
-            <p className="text-lg font-semibold">
-              {index + 1}: {safe}
-            </p>
-          </div>
-        ))}
+        <div className="border border-neutral-800 rounded-lg">
+          {safesOfOwner?.map((safe, index) => (
+            <div
+              key={index}
+              onClick={() => setSelectedSafe(safe)}
+              className={`${
+                selectedSafe === safe
+                  ? "bg-neutral-800/30"
+                  : "hover:bg-neutral-800/30"
+              } cursor-pointer flex flex-col items-center justify-center px-8 mb-4`}
+            >
+              <p className="text-lg font-semibold">
+                {index + 1}: {safe}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {safesOfOwner.length === 0 && (
