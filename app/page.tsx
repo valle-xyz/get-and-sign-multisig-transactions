@@ -21,6 +21,9 @@ export default function Home() {
   const [isDeployingSafe, setIsDeployingSafe] = useState(false);
   const [selectedSafe, setSelectedSafe] = useState(null);
   const [transactionHash, setTransactionHash] = useState(null);
+  const [dummyTransactionHash, setDummyTransactionHash] = useState(null);
+
+  const [isTransactionPending, setIsTransactionPending] = useState(false);
 
   const checkForDeployedSafes = async () => {
     const apiKit = new SafeApiKit({
@@ -57,32 +60,76 @@ export default function Home() {
   };
 
   const handleAddPasskeyAsOwner = async () => {
+    // Get the passkey
     const passkey = await getOrCreatePasskey();
 
+    // Initialize the Safe with Owner 1
     let safe = await Safe.init({
       provider: RPC_URL,
       signer: OWNER_1_PRIVATE_KEY,
       safeAddress: selectedSafe,
     });
 
-    const safeTransaction = await safe.createAddOwnerTx({
+    // Create the transaction to add the passkey as an owner
+    const addOwnerTx = await safe.createAddOwnerTx({
       passkey,
     });
+    console.log("Safe Transaction:", addOwnerTx);
 
-    console.log("Safe Transaction:", safeTransaction);
+    // Sign the transaction with Owner 1
+    const addOwnerTx_signed_1 = await safe.signTransaction(addOwnerTx);
+    console.log("Signed Transaction:", addOwnerTx_signed_1);
 
-    let signedTransaction = await safe.signTransaction(safeTransaction);
-    console.log("Signed Transaction:", signedTransaction);
-
+    // Sign the transaction with Owner 2
     safe = await safe.connect({ signer: OWNER_2_PRIVATE_KEY });
+    const addOwnerTx_signed_2 = await safe.signTransaction(addOwnerTx_signed_1);
+    console.log("Signed Transaction:", addOwnerTx_signed_2);
 
-    signedTransaction = await safe.signTransaction(signedTransaction);
-    console.log("Signed Transaction:", signedTransaction);
-
+    // Execute the transaction as Owner 1
     safe = await safe.connect({ signer: OWNER_1_PRIVATE_KEY });
+    const { hash } = await safe.executeTransaction(addOwnerTx_signed_2);
 
-    const { hash } = await safe.executeTransaction(signedTransaction);
     setTransactionHash(hash);
+  };
+
+  const handleSendTransaction = async () => {
+    setIsTransactionPending(true);
+    console.log("Sending transaction...");
+
+    // Get the passkey
+    const passkey = await getOrCreatePasskey();
+
+    // Initialize the Safe with Owner 1
+    let safe = await Safe.init({
+      provider: RPC_URL,
+      signer: OWNER_1_PRIVATE_KEY,
+      safeAddress: selectedSafe,
+    });
+
+    // Create a dummy transaction (sending 0 eth to the zero address)
+    const dummyTransaction = {
+      to: "0x0000000000000000000000000000000000000000",
+      value: 0n,
+      data: "0x",
+    };
+
+    // Create and sign the transaction with Owner 1
+    const txSigned_1 = await safe.createTransaction({
+      transactions: [dummyTransaction],
+    });
+
+    // Sign the transaction with the passkey
+    safe = await safe.connect({ signer: passkey });
+    const txSigned_2 = await safe.signTransaction(txSigned_1);
+
+    // Execute the transaction as Owner 1 (which has Sepolia Eth)
+    safe = await safe.connect({ signer: OWNER_1_PRIVATE_KEY });
+    const { hash } = await safe.executeTransaction(txSigned_2);
+
+    // Log the transaction hash
+    console.log("transactionHash: ", hash);
+    setIsTransactionPending(false);
+    setDummyTransactionHash(hash);
   };
 
   useEffect(() => {
@@ -148,6 +195,37 @@ export default function Home() {
               className="underline-current text-blue-500 mb-4"
             >
               {transactionHash}
+            </a>
+          </p>
+        </div>
+      )}
+
+      {selectedSafe && (
+        <div className="mt-8">
+          When you added the passkey as an owner, you can send a transaction:{" "}
+          <br />
+          <button
+            onClick={handleSendTransaction}
+            className="px-4 py-2 font-semibold text-white bg-neutral-800 rounded-lg"
+          >
+            Send Transaction
+          </button>
+        </div>
+      )}
+
+      {isTransactionPending && <p>Sending transaction...</p>}
+
+      {dummyTransactionHash && (
+        <div className="mt-8">
+          <p>
+            The transaction has been sent:{" "}
+            <a
+              href={`https://sepolia.etherscan.io/tx/${dummyTransactionHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-current text-blue-500 mb-4"
+            >
+              {dummyTransactionHash}
             </a>
           </p>
         </div>
