@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { OWNER_1_PRIVATE_KEY, OWNER_1_PUBLIC_KEY } from "./keys";
+import {
+  OWNER_1_PRIVATE_KEY,
+  OWNER_2_PRIVATE_KEY,
+  OWNER_1_PUBLIC_KEY,
+  OWNER_2_PUBLIC_KEY,
+  OWNER_3_PUBLIC_KEY,
+} from "./keys";
 import SafeApiKit from "@safe-global/api-kit";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -35,21 +41,25 @@ export default function Home() {
 
     const safe = await safeFactory.deploySafe({
       safeAccountConfig: {
-        owners: [await OWNER_1_PUBLIC_KEY],
-        threshold: 1,
+        owners: [
+          await OWNER_1_PUBLIC_KEY,
+          await OWNER_2_PUBLIC_KEY,
+          await OWNER_3_PUBLIC_KEY,
+        ],
+        threshold: 2,
       },
     });
 
     console.log("Deployed Safe:", safe);
-    setSafesOfOwner([...safesOfOwner, safe.safeAddress]);
+    setSafesOfOwner([...safesOfOwner, await safe.getAddress()]);
     setIsDeployingSafe(false);
-    setSelectedSafe(safe.safeAddress);
+    setSelectedSafe(await safe.getAddress());
   };
 
   const handleAddPasskeyAsOwner = async () => {
     const passkey = await getOrCreatePasskey();
 
-    const safe = await Safe.init({
+    let safe = await Safe.init({
       provider: RPC_URL,
       signer: OWNER_1_PRIVATE_KEY,
       safeAddress: selectedSafe,
@@ -61,9 +71,15 @@ export default function Home() {
 
     console.log("Safe Transaction:", safeTransaction);
 
-    const signedTransaction = await safe.signTransaction(safeTransaction);
-
+    let signedTransaction = await safe.signTransaction(safeTransaction);
     console.log("Signed Transaction:", signedTransaction);
+
+    safe = await safe.connect({ signer: OWNER_2_PRIVATE_KEY });
+
+    signedTransaction = await safe.signTransaction(signedTransaction);
+    console.log("Signed Transaction:", signedTransaction);
+
+    safe = await safe.connect({ signer: OWNER_1_PRIVATE_KEY });
 
     const { hash } = await safe.executeTransaction(signedTransaction);
     setTransactionHash(hash);
@@ -99,7 +115,7 @@ export default function Home() {
       {safesOfOwner.length === 0 && (
         <div className="justify-center p-8 border border-neutral-800 rounded-lg bg-zinc-800/30">
           <p className="text-lg font-semibold">You currently have no Safes.</p>
-          <p>Here you can deploy a Safe with you as the only owner:</p>
+          <p>Here you can deploy a 2 out of 3 Safe:</p>
           <button
             onClick={deploySafeForOwner}
             className="mt-4 px-4 py-2 font-semibold text-white bg-neutral-800 rounded-lg"
